@@ -28,16 +28,24 @@ export default {
     this.init()
   },
   methods: {
+    // 移动元素位置
     drag(ev){
-      var oevent = ev || event;
+      var oevent = ev || window.event;
+      // 获取事件对象
       var handleObject = this.$refs.drag;
+      // 当前鼠标的位置 - 当前元素的位置
+      // 计算当前鼠标和元素之间位置的偏移量，让移动后的元素以鼠标按下时的位置为坐标。（默认以元素左上点为坐标）
 　　　 var distanceX = oevent.clientX - handleObject.offsetLeft;
 　　　 var distanceY = oevent.clientY - handleObject.offsetTop;
+
+      // 绑定鼠标的移动事件，因为光标在DIV元素外面也要有效果，所以要用doucment的事件，而不用DIV元素的事件
 　　　 document.onmousemove = function(ev){
-　　　　　　var oevent = ev || event;
+　　　　　　var oevent = ev || window.event;
+          // 计算元素的位置
 　　　　　　handleObject.style.left = oevent.clientX - distanceX + 'px';
 　　　　　　handleObject.style.top = oevent.clientY - distanceY + 'px';
 　　　　};
+       //当鼠标按键弹起时，解除元素移动，让元素停留在当前位置
 　　　　document.onmouseup = function(){
 　　　　　　document.onmousemove = null;
 　　　　　　document.onmouseup = null;
@@ -128,7 +136,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .drag {
-  position:relative;
+  position:absolute;
   width: 300px;
   height: 210px;
   border-radius: 5px;
