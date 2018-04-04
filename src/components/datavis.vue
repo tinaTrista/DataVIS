@@ -1,15 +1,14 @@
 <template>
 <div ref='mainCanvas'>
   <div class='top-part'>
-    <p>datavis</p>
+    <p>DataVis</p>
   </div>
   <div class='mainPanel'>
     <div class="left-part">
     </div>
     <div class="right-part">
     </div>
-    <div class="middle-part">
-    </div>
+    <middle-part class='middle-part'></middle-part>
   </div>
   <div class='bottom-part'>
   </div>
@@ -18,11 +17,14 @@
 </template>
 
 <script>
+import middlePart from './middlePart'
 export default {
   name: 'datavis',
+  components: {
+    "middle-part" :middlePart
+  },
   data() {
     return {
-      msg: 'Welcome to Your Vue.js App'
     }
   }
 }
