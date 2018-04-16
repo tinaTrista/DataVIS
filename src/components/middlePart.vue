@@ -1,17 +1,17 @@
 <template>
 <div id='middle-part'>
-  <div ref='drag' class='drag'>
+  <div ref='drag' id='drag' style="width: 300px;height: 210px;">
     <div @mousedown='drag($event)' style="width:100%;height:100%;">
       <div id='bingtu' style="width:100%;height:100%;border:1px solid #999"></div>
     </div>
-    <div class='leftBar'></div>
-    <div class='topBar'></div>
-    <div class='rightBar'></div>
-    <div class='bottomBar'></div>
-    <div class='leftTopBar'></div>
-    <div class='leftBottomBar'></div>
-    <div class='rightBottomBar'></div>
-    <div class='rightTopBar'></div>
+    <div class='leftBar' @mousedown="resize($event,'left')"></div>
+    <div class='topBar' @mousedown="resize($event,'top')"></div>
+    <div class='rightBar' @mousedown="resize($event,'right')"></div>
+    <div class='bottomBar' @mousedown="resize($event,'bottom')"></div>
+    <div class='leftTopBar' @mousedown="resize($event,'LT')"></div>
+    <div class='leftBottomBar' @mousedown="resize($event,'LB')"></div>
+    <div class='rightBottomBar' @mousedown="resize($event,'RB')"></div>
+    <div class='rightTopBar' @mousedown="resize($event,'RT')"></div>
   </div>
 </div>
 </template>
@@ -21,38 +21,8 @@ export default {
   name: 'middlePart',
   data() {
     return {
-      chart: null
-    }
-  },
-  mounted() {
-    this.init()
-  },
-  methods: {
-    // 移动元素位置
-    drag(ev){
-      var oevent = ev || window.event;
-      // 获取事件对象
-      var handleObject = this.$refs.drag;
-      // 当前鼠标的位置 - 当前元素的位置
-      // 计算当前鼠标和元素之间位置的偏移量，让移动后的元素以鼠标按下时的位置为坐标。（默认以元素左上点为坐标）
-　　　 var distanceX = oevent.clientX - handleObject.offsetLeft;
-　　　 var distanceY = oevent.clientY - handleObject.offsetTop;
-
-      // 绑定鼠标的移动事件，因为光标在DIV元素外面也要有效果，所以要用doucment的事件，而不用DIV元素的事件
-　　　 document.onmousemove = function(ev){
-　　　　　　var oevent = ev || window.event;
-          // 计算元素的位置
-　　　　　　handleObject.style.left = oevent.clientX - distanceX + 'px';
-　　　　　　handleObject.style.top = oevent.clientY - distanceY + 'px';
-　　　　};
-       //当鼠标按键弹起时，解除元素移动，让元素停留在当前位置
-　　　　document.onmouseup = function(){
-　　　　　　document.onmousemove = null;
-　　　　　　document.onmouseup = null;
-　　　　};
-    },
-    init() {
-      let option = {
+      chart: null,
+      option:{
         title: {
           text: '某站点用户访问来源',
           subtext: '纯属虚构',
@@ -125,9 +95,103 @@ export default {
             }
           ]
         }]
+      }
+    }
+  },
+  mounted() {
+    this.init(this);
+  },
+  methods: {
+    resize(ev, type) {
+      var that = this;
+      var e = ev || window.event
+      var x = e.clientX;
+      var y = e.clientY;
+      var oBox = this.$refs.drag;
+      var oBoxL = oBox.offsetLeft;
+      var oBoxT = oBox.offsetTop;
+      var oBoxW = oBox.offsetWidth;
+      var oBoxH = oBox.offsetHeight;
+      document.onmousemove = function(e) {
+        e = e || event;
+        var xx = e.clientX;
+        var yy = e.clientY;
+        if (type == 'left') {
+          console.log(oBoxL, oBoxW, oBox.style.left, x, xx)
+          oBox.style.width = oBoxW + x - xx + 'px'
+          oBox.style.left = xx - x + oBoxL + 'px';
+        } else if (type == 'right') {
+          oBox.style.width = oBoxW + xx - x + 'px'
+        }
+        if (type == 'top') {
+          oBox.style.height = oBoxH + y - yy + 'px';
+          oBox.style.top = yy - y + oBoxT + 'px';
+        } else if (type == 'bottom') {
+          oBox.style.height = oBoxH + yy - y + 'px';
+        }
+        if (type == 'LT') {
+          oBox.style.width = oBoxW + x - xx + 'px'
+          oBox.style.left = xx - x + oBoxL + 'px';
+          oBox.style.height = oBoxH + y - yy + 'px';
+          oBox.style.top = yy - y + oBoxT + 'px';
+        }
+        if (type == 'RT') {
+          oBox.style.width = oBoxW + xx - x + 'px'
+          oBox.style.height = oBoxH + y - yy + 'px'
+          oBox.style.top = yy - y + oBoxT + 'px';
+        }
+        if (type == 'RB') {
+          oBox.style.width = oBoxW + xx - x + 'px'
+          oBox.style.height = oBoxH + yy - y + 'px';
+        }
+        if (type == 'LB') {
+          oBox.style.width = oBoxW + x - xx + 'px'
+          oBox.style.left = xx - x + oBoxL + 'px';
+          oBox.style.height = oBoxH + yy - y + 'px';
+        }
+        return false;
+      }
+      document.onmouseup = function() {
+        document.onmousemove = null;
+        document.onmouseup = null;
+        that.chart.resize();
+      }
+      if (e.preventDefault) {
+        e.preventDefault();
+      }
+    },
+
+
+    // 移动元素位置
+    drag(ev) {
+      var oevent = ev || window.event
+      // 获取事件对象
+      var handleObject = this.$refs.drag
+      // 当前鼠标的位置 - 当前元素的位置
+      // 计算当前鼠标和元素之间位置的偏移量，让移动后的元素以鼠标按下时的位置为坐标。（默认以元素左上点为坐标）
+      　　　
+      var distanceX = oevent.clientX - handleObject.offsetLeft　　
+      var distanceY = oevent.clientY - handleObject.offsetTop
+
+      // 绑定鼠标的移动事件，因为光标在DIV元素外面也要有效果，所以要用doucment的事件，而不用DIV元素的事件
+      　　　
+      document.onmousemove = function(ev) {　　　　　　
+        var oevent = ev || window.event
+        // 计算元素的位置
+        　　　　　　
+        handleObject.style.left = oevent.clientX - distanceX + 'px'　　　　　
+        handleObject.style.top = oevent.clientY - distanceY + 'px'　　　
       };
-      this.chart = $echarts.init(document.getElementById('bingtu'))
-      this.chart.setOption(option)
+      //当鼠标按键弹起时，解除元素移动，让元素停留在当前位置
+      　　　　
+      document.onmouseup = function() {　　　　　　
+        document.onmousemove = null;　　　　　　
+        document.onmouseup = null;　　　　
+      };
+    },
+    init(_this) {
+      _this.chart = $echarts.init(document.getElementById('bingtu'))
+      _this.chart.setOption(_this.option)
     }
   }
 }
@@ -135,14 +199,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.drag {
-  position:absolute;
-  width: 300px;
-  height: 210px;
-  border-radius: 5px;
-  margin: 20px;
+#drag {
+  position: absolute;
   cursor: move;
-  z-index: 2;
 }
 
 .leftBar,
@@ -154,8 +213,7 @@ export default {
 .rightTopBar,
 .rightBottomBar {
   position: absolute;
-  background-color: aliceblue;
-  opacity:0;
+  /*background-color: aliceblue;*/
 }
 
 .leftBar,
