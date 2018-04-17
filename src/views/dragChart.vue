@@ -1,8 +1,12 @@
 <template>
-<div id='middle-part'>
-  <div ref='drag' id='drag' style="width: 300px;height: 210px;">
+  <div ref='drag' id='drag'
+     :style="{
+     'left':data.left,
+     'top':data.top,
+     'width':data.width,
+     'height':data.height}" >
     <div @mousedown='drag($event)' style="width:100%;height:100%;">
-      <div id='bingtu' style="width:100%;height:100%;border:1px solid #999"></div>
+      <chart :data='data'></chart>
     </div>
     <div class='leftBar' @mousedown="resize($event,'left')"></div>
     <div class='topBar' @mousedown="resize($event,'top')"></div>
@@ -13,93 +17,24 @@
     <div class='rightBottomBar' @mousedown="resize($event,'RB')"></div>
     <div class='rightTopBar' @mousedown="resize($event,'RT')"></div>
   </div>
-</div>
 </template>
 
 <script>
+import chart from '@/views/chart'
 export default {
-  name: 'middlePart',
+  name: 'dragChart',
+  props: {
+    data: Object
+  },
+  components:{
+    "chart":chart
+  },
   data() {
     return {
-      chart: null,
-      option:{
-        title: {
-          text: '某站点用户访问来源',
-          subtext: '纯属虚构',
-          x: 'center'
-        },
-        tooltip: {
-          trigger: 'item',
-          formatter: "{a} <br/>{b} : {c} ({d}%)"
-        },
-        legend: {
-          orient: 'vertical',
-          x: 'left',
-          data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
-        },
-        toolbox: {
-          show: true,
-          feature: {
-            mark: {
-              show: true
-            },
-            dataView: {
-              show: true,
-              readOnly: false
-            },
-            magicType: {
-              show: true,
-              type: ['pie', 'funnel'],
-              option: {
-                funnel: {
-                  x: '25%',
-                  width: '50%',
-                  funnelAlign: 'left',
-                  max: 1548
-                }
-              }
-            },
-            restore: {
-              show: true
-            },
-            saveAsImage: {
-              show: true
-            }
-          }
-        },
-        calculable: true,
-        series: [{
-          name: '访问来源',
-          type: 'pie',
-          radius: '55%',
-          center: ['50%', '60%'],
-          data: [{
-              value: 335,
-              name: '直接访问'
-            },
-            {
-              value: 310,
-              name: '邮件营销'
-            },
-            {
-              value: 234,
-              name: '联盟广告'
-            },
-            {
-              value: 135,
-              name: '视频广告'
-            },
-            {
-              value: 1548,
-              name: '搜索引擎'
-            }
-          ]
-        }]
-      }
     }
   },
   mounted() {
-    this.init(this);
+
   },
   methods: {
     resize(ev, type) {
@@ -117,7 +52,6 @@ export default {
         var xx = e.clientX;
         var yy = e.clientY;
         if (type == 'left') {
-          console.log(oBoxL, oBoxW, oBox.style.left, x, xx)
           oBox.style.width = oBoxW + x - xx + 'px'
           oBox.style.left = xx - x + oBoxL + 'px';
         } else if (type == 'right') {
@@ -188,10 +122,6 @@ export default {
         document.onmousemove = null;　　　　　　
         document.onmouseup = null;　　　　
       };
-    },
-    init(_this) {
-      _this.chart = $echarts.init(document.getElementById('bingtu'))
-      _this.chart.setOption(_this.option)
     }
   }
 }
@@ -199,9 +129,21 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+#middle-part {
+  position: absolute;
+  left: 200px;
+  right: 200px;
+  height: calc(100% - 100px);
+  background-color: #2f2f2d;
+}
 #drag {
   position: absolute;
   cursor: move;
+  width:300px;
+  height:200px;
+}
+#drag:hover {
+  border:1px solid #999;
 }
 
 .leftBar,
