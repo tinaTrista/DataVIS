@@ -21,3 +21,15 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+
+// 这个方法用于获取目标元素左上角相对于窗体的坐标
+// 由于offsetLeft和offsetTop只能用于获取元素相对于父元素的位置，
+// 所以需要循环获取父元素的坐标直至根元素。
+Vue.prototype.getElementPosition = function(el) {
+    let _x = 0, _y = 0;
+    do {
+         _x += el.offsetLeft;
+         _y += el.offsetTop;
+     } while (el = el.offsetParent);
+     return { x: _x, y: _y };
+ }

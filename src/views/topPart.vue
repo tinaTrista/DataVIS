@@ -1,6 +1,6 @@
 <template>
 <div id="top-part">
-  <p>DataVis</p>
+  <p>MZCC</p>
 </div>
 </template>
 

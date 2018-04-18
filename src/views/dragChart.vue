@@ -1,12 +1,13 @@
 <template>
   <div ref='drag' id='drag'
      :style="{
-     'left':data.left,
-     'top':data.top,
+     'position':data.position,
+     'left':data.left+'px',
+     'top':data.top+'px',
      'width':data.width,
      'height':data.height}" >
     <div @mousedown='drag($event)' style="width:100%;height:100%;">
-      <chart :data='data'></chart>
+      <chart :data='data' :index='index'></chart>
     </div>
     <div class='leftBar' @mousedown="resize($event,'left')"></div>
     <div class='topBar' @mousedown="resize($event,'top')"></div>
@@ -24,7 +25,8 @@ import chart from '@/views/chart'
 export default {
   name: 'dragChart',
   props: {
-    data: Object
+    data: Object,
+    index: Number
   },
   components:{
     "chart":chart
@@ -34,7 +36,7 @@ export default {
     }
   },
   mounted() {
-
+    console.log(this.data)
   },
   methods: {
     resize(ev, type) {
@@ -88,7 +90,7 @@ export default {
       document.onmouseup = function() {
         document.onmousemove = null;
         document.onmouseup = null;
-        that.chart.resize();
+        that.data.chart.resize();
       }
       if (e.preventDefault) {
         e.preventDefault();
@@ -141,9 +143,10 @@ export default {
   cursor: move;
   width:300px;
   height:200px;
+  border:1px solid #999;
 }
 #drag:hover {
-  border:1px solid #999;
+  box-shadow: 0 0 20px #4E4E4E;
 }
 
 .leftBar,

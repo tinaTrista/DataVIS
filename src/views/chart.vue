@@ -7,7 +7,13 @@
 export default {
   name: 'chart',
   props: {
-    data: Object
+    data: Object,
+    index: Number
+  },
+  computed:{
+    chartList(){
+      return this.$store.state.chartList
+    }
   },
   components:{
   },
@@ -97,6 +103,9 @@ export default {
     init(_this) {
       _this.chart = $echarts.init(document.getElementById(_this.data.id))
       _this.chart.setOption(_this.option)
+      _this.chartList[this.index].chart = _this.chart
+      _this.$store.commit('editArray', _this.chartList)
+      console.log(_this.chartList)
     }
   }
 }

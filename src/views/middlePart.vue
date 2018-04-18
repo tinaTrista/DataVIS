@@ -1,7 +1,7 @@
 <template>
 <div id='middle-part'>
-  <template v-for='item in chartList'>
-    <drag-chart :data='item'></drag-chart>
+  <template v-for='(item,index) in chartList'>
+    <drag-chart :data='item' :index='index'></drag-chart>
   </template>
 
 </div>
@@ -37,6 +37,6 @@ export default {
   left: 200px;
   right: 200px;
   height: calc(100% - 100px);
-  background-color: #2f2f2d;
+  background-color: #333744;
 }
 </style>
